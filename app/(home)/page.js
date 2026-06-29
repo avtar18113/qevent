@@ -3,6 +3,7 @@ import SwiperComponent from "@/components/SwiperComponent";
 import React from "react";
 import { dummyEvents } from "@/constants/dummyEvents";
 
+
 function App() {
   return (
     <div className="h-full">

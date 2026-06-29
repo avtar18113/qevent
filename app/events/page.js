@@ -1,10 +1,10 @@
 "use client";
 
 import EventCard from "@/components/EventCard";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
-export default function EventsPage() {
+function EventsContent() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -16,6 +16,11 @@ export default function EventsPage() {
     async function fetchEvents() {
       try {
         const res = await fetch("https://qevent-backend.labs.crio.do/events");
+
+        if (!res.ok) {
+          throw new Error("Failed to fetch events");
+        }
+
         const data = await res.json();
         setEvents(data);
       } catch (error) {
@@ -43,7 +48,11 @@ export default function EventsPage() {
   });
 
   if (loading) {
-    return <h1 className="text-center text-3xl mt-10">Loading events...</h1>;
+    return (
+      <h1 className="text-center text-3xl mt-10">
+        Loading events...
+      </h1>
+    );
   }
 
   return (
@@ -74,5 +83,19 @@ export default function EventsPage() {
         )}
       </div>
     </main>
+  );
+}
+
+export default function EventsPage() {
+  return (
+    <Suspense
+      fallback={
+        <h1 className="text-center text-3xl mt-10">
+          Loading events...
+        </h1>
+      }
+    >
+      <EventsContent />
+    </Suspense>
   );
 }
